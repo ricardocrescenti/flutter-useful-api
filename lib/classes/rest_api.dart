@@ -11,38 +11,45 @@ class RestApi {
 		this.routePath,
 	});
 
-	delete<T>(String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, T Function(dynamic response) convertData}) {
-		final dynamic response = apiService.dio.delete(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken);
-		return (convertData != null ? convertData(response) : response);
+	Future<T> delete<T>(BuildContext context, String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, T Function(dynamic response) convertData}) async {
+		final dynamic response = await apiService.dio.delete(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken)
+			.catchError((error) async { await apiService.processError(context, error); });
+		return (response != null ? (convertData != null ? convertData(response) : response) : null);
 	}
 
-	get<T>(String path, {Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, ProgressCallback onReceiveProgress, T Function(dynamic response) convertData}) {
-		final dynamic response = apiService.dio.get(path, queryParameters: queryParameters, options: options, cancelToken: cancelToken, onReceiveProgress: onReceiveProgress);
-		return (convertData != null ? convertData(response) : response);
+	Future<T> get<T>(BuildContext context, String path, {Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, ProgressCallback onReceiveProgress, T Function(dynamic response) convertData}) async {
+		final dynamic response = await apiService.dio.get(path, queryParameters: queryParameters, options: options, cancelToken: cancelToken, onReceiveProgress: onReceiveProgress)
+			.catchError((error) async { await apiService.processError(context, error); });
+		return (response != null ? (convertData != null ? convertData(response) : response) : null);
 	}
 
-	head<T>(String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, T Function(dynamic response) convertData}) {
-		final dynamic response = apiService.dio.head(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken);
-		return (convertData != null ? convertData(response) : response);
+	Future<T> head<T>(BuildContext context, String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, T Function(dynamic response) convertData}) async {
+		final dynamic response = await apiService.dio.head(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken)
+			.catchError((error) async { await apiService.processError(context, error); });
+		return (response != null ? (convertData != null ? convertData(response) : response) : null);
 	}
 
-	patch<T>(String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, ProgressCallback onSendProgress, ProgressCallback onReceiveProgress, T Function(dynamic response) convertData}) {
-		final dynamic response = apiService.dio.patch(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken, onSendProgress: onSendProgress, onReceiveProgress: onReceiveProgress);
-		return (convertData != null ? convertData(response) : response);
+	Future<T> patch<T>(BuildContext context, String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, ProgressCallback onSendProgress, ProgressCallback onReceiveProgress, T Function(dynamic response) convertData}) async {
+		final dynamic response = await apiService.dio.patch(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken, onSendProgress: onSendProgress, onReceiveProgress: onReceiveProgress)
+			.catchError((error) async { await apiService.processError(context, error); });
+		return (response != null ? (convertData != null ? convertData(response) : response) : null);
 	}
 
-	post<T>(String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, ProgressCallback onSendProgress, ProgressCallback onReceiveProgress, T Function(dynamic response) convertData}) {
-		final dynamic response = apiService.dio.post(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken, onSendProgress: onSendProgress, onReceiveProgress: onReceiveProgress);
-		return (convertData != null ? convertData(response) : response);
+	Future<T> post<T>(BuildContext context, String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, ProgressCallback onSendProgress, ProgressCallback onReceiveProgress, T Function(dynamic response) convertData}) async {
+		final dynamic response = await apiService.dio.post(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken, onSendProgress: onSendProgress, onReceiveProgress: onReceiveProgress)
+			.catchError((error) async { await apiService.processError(context, error); });
+		return (response != null ? (convertData != null ? convertData(response) : response) : null);
 	}
 
-	put<T>(String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, ProgressCallback onSendProgress, ProgressCallback onReceiveProgress, T Function(dynamic response) convertData}) {
-		final dynamic response = apiService.dio.put(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken, onSendProgress: onSendProgress, onReceiveProgress: onReceiveProgress);
-		return (convertData != null ? convertData(response) : response);
+	Future<T> put<T>(BuildContext context, String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, ProgressCallback onSendProgress, ProgressCallback onReceiveProgress, T Function(dynamic response) convertData}) async {
+		final dynamic response = await apiService.dio.put(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken, onSendProgress: onSendProgress, onReceiveProgress: onReceiveProgress)
+			.catchError((error) async { await apiService.processError(context, error); });
+		return (response != null ? (convertData != null ? convertData(response) : response) : null);
 	}
 
-	request<T>(String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, ProgressCallback onSendProgress, ProgressCallback onReceiveProgress, T Function(dynamic response) convertData}) {
-		final dynamic response = apiService.dio.request(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken, onSendProgress: onSendProgress, onReceiveProgress: onReceiveProgress);
-		return (convertData != null ? convertData(response) : response);
+	Future<T> request<T>(BuildContext context, String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, ProgressCallback onSendProgress, ProgressCallback onReceiveProgress, T Function(dynamic response) convertData}) async {
+		final dynamic response = await apiService.dio.request(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken, onSendProgress: onSendProgress, onReceiveProgress: onReceiveProgress)
+			.catchError((error) async { await apiService.processError(context, error); });
+		return (response != null ? (convertData != null ? convertData(response) : response) : null);
 	}
 }
