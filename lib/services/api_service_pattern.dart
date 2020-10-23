@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:useful_api/classes/rest_api.dart';
 import 'package:useful_api/useful_api.dart';
@@ -50,9 +51,10 @@ abstract class ApiServicePattern {
   }
   dynamic onError(DioError error) async {
     if (error.response != null) {
-      error.response.data = DefaultApiResponseModel.fromJson(error);
+      error.response.data = DefaultApiResponseModel.fromJson(error.response.data);
     }
     return error;
   }
 
+  Future<void> processError(BuildContext context, DioError error);
 }
