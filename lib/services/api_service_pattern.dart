@@ -4,7 +4,7 @@ import 'package:localstorage/localstorage.dart';
 import 'package:useful_api/classes/rest_api.dart';
 import 'package:useful_api/useful_api.dart';
 
-abstract class ApiServicePattern {
+abstract class ApiServiceMixin {
   final Dio dio = Dio();
 
   LocalStorage _localStorage;

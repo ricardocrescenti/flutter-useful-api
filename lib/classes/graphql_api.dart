@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:useful_api/useful_api.dart';
 
 class GraphQLApi {
-  final ApiServicePattern apiService;
+  final ApiServiceMixin apiService;
   final String routePath;
 
   final Map<String, GraphQLSchema> schemas = {};
