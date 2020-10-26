@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:useful_api/useful_api.dart';
 import 'package:simple_localization/simple_localization.dart';
 
 class SimpleAppLocalization extends SimpleLocalizations {
@@ -25,16 +24,10 @@ class SimpleAppLocalization extends SimpleLocalizations {
   @override
   Map<String, Map<dynamic, String>> get localizedValues => {
     'en': {
-      // standard_form
-      StandardFormMessages.savingText: 'Saving'
     },
     'es': {
-      // standard_form
-      StandardFormMessages.savingText: 'Guardando'
     },
     'pt': {
-      // standard_form
-      StandardFormMessages.savingText: 'Salvando'
     }
   };
 }
