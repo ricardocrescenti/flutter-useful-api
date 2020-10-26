@@ -3,13 +3,13 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:simple_localization/simple_localization.dart';
 
-class SimpleAppLocalization extends SimpleLocalizations {
-  static SimpleAppLocalization of(BuildContext context) {
-    SimpleAppLocalization localization = Localizations.of<SimpleAppLocalization>(context, SimpleAppLocalization);
-    return localization ?? SimpleAppLocalization(Localizations.localeOf(context));
+class UsefulApiLocalization extends SimpleLocalizations {
+  static UsefulApiLocalization of(BuildContext context) {
+    UsefulApiLocalization localization = Localizations.of<UsefulApiLocalization>(context, UsefulApiLocalization);
+    return localization ?? UsefulApiLocalization(Localizations.localeOf(context));
   }
   
-  SimpleAppLocalization(Locale locale) : super(locale);
+  UsefulApiLocalization(Locale locale) : super(locale);
 
   @override
   Locale get defaultLocale => Locale('en');
