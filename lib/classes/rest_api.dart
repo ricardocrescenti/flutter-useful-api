@@ -11,45 +11,63 @@ class RestApi {
 		this.routePath,
 	});
 
-	Future<T> delete<T>(BuildContext context, String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, T Function(dynamic response) convertData}) async {
-		final dynamic response = await apiService.dio.delete(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken)
-			.catchError((error) async { await apiService.processError(context, error); });
-		return (response != null ? (convertData != null ? convertData(response) : response) : null);
+	Future<T> delete<T>(BuildContext context, String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, T Function(dynamic response) convertData, ApiCacheCallback cache}) async {
+		return _processRequest(context, apiService.dio.delete(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken), convertData, cache); 
 	}
 
-	Future<T> get<T>(BuildContext context, String path, {Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, ProgressCallback onReceiveProgress, T Function(dynamic response) convertData}) async {
-		final dynamic response = await apiService.dio.get(path, queryParameters: queryParameters, options: options, cancelToken: cancelToken, onReceiveProgress: onReceiveProgress)
-			.catchError((error) async { await apiService.processError(context, error); });
-		return (response != null ? (convertData != null ? convertData(response) : response) : null);
+	Future<T> get<T>(BuildContext context, String path, {Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, ProgressCallback onReceiveProgress, T Function(dynamic response) convertData, ApiCacheCallback cache}) async {
+		return _processRequest(context, apiService.dio.get(path, queryParameters: queryParameters, options: options, cancelToken: cancelToken, onReceiveProgress: onReceiveProgress), convertData, cache);
 	}
 
-	Future<T> head<T>(BuildContext context, String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, T Function(dynamic response) convertData}) async {
-		final dynamic response = await apiService.dio.head(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken)
-			.catchError((error) async { await apiService.processError(context, error); });
-		return (response != null ? (convertData != null ? convertData(response) : response) : null);
+	Future<T> head<T>(BuildContext context, String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, T Function(dynamic response) convertData, ApiCacheCallback cache}) async {
+		return _processRequest(context, apiService.dio.head(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken), convertData, cache);
 	}
 
-	Future<T> patch<T>(BuildContext context, String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, ProgressCallback onSendProgress, ProgressCallback onReceiveProgress, T Function(dynamic response) convertData}) async {
-		final dynamic response = await apiService.dio.patch(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken, onSendProgress: onSendProgress, onReceiveProgress: onReceiveProgress)
-			.catchError((error) async { await apiService.processError(context, error); });
-		return (response != null ? (convertData != null ? convertData(response) : response) : null);
+	Future<T> patch<T>(BuildContext context, String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, ProgressCallback onSendProgress, ProgressCallback onReceiveProgress, T Function(dynamic response) convertData, ApiCacheCallback cache}) async {
+		return _processRequest(context, apiService.dio.patch(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken, onSendProgress: onSendProgress, onReceiveProgress: onReceiveProgress), convertData, cache);
 	}
 
-	Future<T> post<T>(BuildContext context, String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, ProgressCallback onSendProgress, ProgressCallback onReceiveProgress, T Function(dynamic response) convertData}) async {
-		final dynamic response = await apiService.dio.post(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken, onSendProgress: onSendProgress, onReceiveProgress: onReceiveProgress)
-			.catchError((error) async { await apiService.processError(context, error); });
-		return (response != null ? (convertData != null ? convertData(response) : response) : null);
+	Future<T> post<T>(BuildContext context, String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, ProgressCallback onSendProgress, ProgressCallback onReceiveProgress, T Function(dynamic response) convertData, ApiCacheCallback cache}) async {
+		return _processRequest(context, apiService.dio.post(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken, onSendProgress: onSendProgress, onReceiveProgress: onReceiveProgress), convertData, cache);
 	}
 
-	Future<T> put<T>(BuildContext context, String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, ProgressCallback onSendProgress, ProgressCallback onReceiveProgress, T Function(dynamic response) convertData}) async {
-		final dynamic response = await apiService.dio.put(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken, onSendProgress: onSendProgress, onReceiveProgress: onReceiveProgress)
-			.catchError((error) async { await apiService.processError(context, error); });
-		return (response != null ? (convertData != null ? convertData(response) : response) : null);
+	Future<T> put<T>(BuildContext context, String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, ProgressCallback onSendProgress, ProgressCallback onReceiveProgress, T Function(dynamic response) convertData, ApiCacheCallback cache}) async {
+		return _processRequest(context, apiService.dio.put(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken, onSendProgress: onSendProgress, onReceiveProgress: onReceiveProgress), convertData, cache);
+	}	
+
+	Future<T> request<T>(BuildContext context, String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, ProgressCallback onSendProgress, ProgressCallback onReceiveProgress, T Function(dynamic response) convertData, ApiCacheCallback cache}) async {
+		return _processRequest(context, apiService.dio.request(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken, onSendProgress: onSendProgress, onReceiveProgress: onReceiveProgress), convertData, cache);
 	}
 
-	Future<T> request<T>(BuildContext context, String path, {dynamic data, Map<String, dynamic> queryParameters, Options options, CancelToken cancelToken, ProgressCallback onSendProgress, ProgressCallback onReceiveProgress, T Function(dynamic response) convertData}) async {
-		final dynamic response = await apiService.dio.request(path, data: data, queryParameters: queryParameters, options: options, cancelToken: cancelToken, onSendProgress: onSendProgress, onReceiveProgress: onReceiveProgress)
-			.catchError((error) async { await apiService.processError(context, error); });
+	Future<T> _processRequest<T>(BuildContext context, Future<Response> futureResponse, T Function(dynamic response) convertData, ApiCacheCallback cache) async {
+		Response response;
+
+		convertData ??= (response) => response;
+		futureResponse.catchError((error) async { await apiService.processError(context, error); });
+
+		if (cache != null) {
+			assert(apiService.localStorage != null, 'You can be initialize cache');
+			await apiService.localStorage.ready;
+
+			dynamic localCache = apiService.localStorage.getItem(cache.name);
+			if (localCache != null) {
+				response = await apiService.onResponse(Response(
+				data: localCache
+				));
+			}
+
+			futureResponse.then((response) async {
+				await apiService.localStorage.setItem(cache.name, (response.data is DefaultApiResponseModel ? response.data.json : response.data));
+				if (localCache != null && cache.onGetData != null) {
+					cache.onGetData(convertData(response));
+				}
+			});
+		}
+
+		if (response == null || cache?.onGetData == null) {
+			response = await futureResponse;
+		}
+
 		return (response != null ? (convertData != null ? convertData(response) : response) : null);
 	}
 }
