@@ -52,14 +52,14 @@ class RestApi {
 			dynamic localCache = apiService.localStorage.getItem(cache.name);
 			if (localCache != null) {
 				response = await apiService.onResponse(Response(
-				data: localCache
+					data: localCache
 				));
 			}
 
 			futureResponse.then((response) async {
 				await apiService.localStorage.setItem(cache.name, (response.data is DefaultApiResponseModel ? response.data.json : response.data));
 				if (localCache != null && cache.onGetData != null) {
-					cache.onGetData(convertData(response));
+					cache.onGetData(response != null ? convertData(response) : null);
 				}
 			});
 		}
@@ -68,6 +68,6 @@ class RestApi {
 			response = await futureResponse;
 		}
 
-		return (response != null ? (convertData != null ? convertData(response) : response) : null);
+		return (response != null ? convertData(response) : null);
 	}
 }
