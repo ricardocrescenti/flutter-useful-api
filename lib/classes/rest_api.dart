@@ -43,7 +43,7 @@ class RestApi {
 		Response response;
 
 		convertData ??= (response) => response;
-		futureResponse.catchError((error) async { await apiService.processError(context, error); });
+		//futureResponse.catchError((error) async { await apiService.processError(context, error); });
 
 		if (cache != null) {
 			assert(apiService.localStorage != null, 'You can be initialize cache');
@@ -65,7 +65,11 @@ class RestApi {
 		}
 
 		if (response == null || cache?.onGetData == null) {
-			response = await futureResponse;
+			try {
+				response = await futureResponse;
+			} catch (error) {
+				await apiService.processError(context, error);
+			}
 		}
 
 		return (response != null ? convertData(response) : null);
