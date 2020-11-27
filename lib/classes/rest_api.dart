@@ -47,7 +47,10 @@ class RestApi {
 
 		if (cache != null) {
 			assert(apiService.localStorage != null, 'You can be initialize cache');
-			await apiService.localStorage.ready;
+
+			try {
+				await apiService.localStorage.ready;
+			} catch(error) {}
 
 			dynamic localCache = apiService.localStorage.getItem(cache.name);
 			if (localCache != null) {
