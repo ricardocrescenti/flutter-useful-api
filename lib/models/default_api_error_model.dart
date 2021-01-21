@@ -1,15 +1,18 @@
 import 'dart:convert';
 
 class DefaultApiErrorModel {
-	String message;
+	List<String> messages;
 	String solution;
 
 	DefaultApiErrorModel.fromJson(dynamic json) {
 		if (json is String) {
-		json = jsonDecode(json);
+			json = jsonDecode(json);
 		}
 
-		this.message = json['message'];
+		this.messages = (json['messages'] as List)?.cast<String>();
+		if (json['message'] != null) {
+			this.messages.add(json['message']);
+		}
 		this.solution = json['solution'];
 	}
 }
