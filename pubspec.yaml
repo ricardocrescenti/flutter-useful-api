@@ -23,7 +23,7 @@ dependencies:
 
   dio: ^3.0.6
   font_awesome_flutter: ^8.5.0
-  localstorage: ^3.0.1+4
+  localstorage: ^3.0.6+9
 
 dev_dependencies:
   flutter_test:
