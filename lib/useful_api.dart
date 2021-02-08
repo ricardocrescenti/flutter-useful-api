@@ -3,6 +3,8 @@ library useful_api;
 export 'classes/api_cache_callback.dart';
 export 'classes/graphql_api.dart';
 export 'classes/graphql_json_builder.dart';
+export 'classes/local_storage_manager.dart';
+export 'classes/rest_api.dart';
 
 export 'localizations/localizations_enums.dart';
 export 'localizations/useful_api_localization.dart';

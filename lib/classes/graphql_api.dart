@@ -32,10 +32,9 @@ class GraphQLApi {
       .addFields(schemas[schemaName ?? queryName].graphQLFields()));
 
     if (cache != null) {
-      assert(apiService.localStorage != null, 'You can be initialize cache');
-      await apiService.localStorage.ready;
+      assert(apiService.localStorageManager != null, 'You can be initialize cache');
 
-      dynamic localCache = apiService.localStorage.getItem(cache.name);
+      dynamic localCache = await apiService.localStorageManager.getItem(cache.name);
       if (localCache != null) {
         response = await apiService.onResponse(Response(
           data: localCache
@@ -43,7 +42,7 @@ class GraphQLApi {
       }
 
       futureResponse.then((response) {
-        apiService.localStorage.setItem(cache.name, (response.data is DefaultApiResponseModel ? response.data.toJson() : response.data));
+        apiService.localStorageManager.setItem(cache.name, (response.data is DefaultApiResponseModel ? response.data.toJson() : response.data));
         if (localCache != null && cache.onGetData != null) {
           cache.onGetData(convertion(response.data));
         }
@@ -64,9 +63,8 @@ class GraphQLApi {
       .addFields(schemas[schemaName ?? mutationName].graphQLFields()));
 
     if (cacheName != null && cacheName.isNotEmpty) {
-      assert(apiService.localStorage != null, 'You can be initialize cache');
-      await apiService.localStorage.ready;
-      apiService.localStorage.setItem(cacheName, (response.data is DefaultApiResponseModel ? response.data.toJson() : response.data));
+      assert(apiService.localStorageManager != null, 'You can be initialize cache');
+      apiService.localStorageManager.setItem(cacheName, (response.data is DefaultApiResponseModel ? response.data.toJson() : response.data));
     }
 
     return (convertion == null ? response.data : convertion(response.data));

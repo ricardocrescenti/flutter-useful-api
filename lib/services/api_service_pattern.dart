@@ -1,14 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:localstorage/localstorage.dart';
 import 'package:useful_api/classes/rest_api.dart';
 import 'package:useful_api/useful_api.dart';
 
 abstract class ApiServiceMixin {
   final Dio dio = Dio();
 
-  LocalStorage _localStorage;
-  LocalStorage get localStorage => _localStorage;
+  LocalStorageManager _localStorageManager;
+  LocalStorageManager get localStorageManager => _localStorageManager;
 
   RestApi _rest;
   RestApi get rest => _rest;
@@ -30,8 +29,8 @@ abstract class ApiServiceMixin {
   }
   
   Future<bool> initializeCache({String fileName}) {
-    _localStorage = new LocalStorage('cache_' + (fileName == null || fileName.isEmpty ? this.runtimeType.toString() : fileName) + '.json', null, {});
-    return _localStorage.ready;
+    _localStorageManager = new LocalStorageManager('cache_' + (fileName == null || fileName.isEmpty ? this.runtimeType.toString() : fileName) + '.json');
+    return localStorageManager.ready;
   }
 
   GraphQLApi initializeGraphQL({String routePath = 'graphql'}) {

@@ -46,13 +46,9 @@ class RestApi {
 		//futureResponse.catchError((error) async { await apiService.processError(context, error); });
 
 		if (cache != null) {
-			assert(apiService.localStorage != null, 'You can be initialize cache');
+			assert(apiService.localStorageManager != null, 'You can be initialize cache');
 
-			try {
-				await apiService.localStorage.ready;
-			} catch(error) {}
-
-			dynamic localCache = apiService.localStorage.getItem(cache.name);
+			dynamic localCache = await apiService.localStorageManager.getItem(cache.name);
 			if (localCache != null) {
 				response = await apiService.onResponse(Response(
 					data: localCache
@@ -60,7 +56,7 @@ class RestApi {
 			}
 
 			futureResponse.then((response) async {
-				await apiService.localStorage.setItem(cache.name, (response.data is DefaultApiResponseModel ? response.data.json : response.data));
+				apiService.localStorageManager.setItem(cache.name, (response.data is DefaultApiResponseModel ? response.data.json : response.data));
 				if (localCache != null && cache.onGetData != null) {
 					cache.onGetData(response != null ? convertData(response) : null);
 				}
