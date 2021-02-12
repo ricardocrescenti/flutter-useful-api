@@ -43,8 +43,12 @@ class LocalStorageManager {
 
 			if (_storagePendingItems.length > 0) {			
 				_savingPendingStorageItems = _processPendingStorageItems();
+			} else {
+				_savingPendingStorageItems = null;
 			}
 
+		} else {
+			_savingPendingStorageItems = null;
 		}
 	}
 }
