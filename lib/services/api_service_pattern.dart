@@ -17,7 +17,7 @@ abstract class ApiServiceMixin {
 
 
   initializeDio(String baseUrl) {
-    dio.options.baseUrl = baseUrl;
+    dio.options.baseUrl = baseUrl + (!baseUrl.endsWith('/') ? '/' : '');
     dio.options.headers.putIfAbsent('Accept', () => 'application/json');
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: this.onRequest,
