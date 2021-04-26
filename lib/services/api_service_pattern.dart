@@ -15,10 +15,17 @@ abstract class ApiServiceMixin {
   GraphQLApi _graphQL;
   GraphQLApi get graphQL => _graphQL;
 
-
-  initializeDio(String baseUrl) {
+  void initializeDio(String baseUrl) {
     dio.options.baseUrl = baseUrl;
     dio.options.headers.putIfAbsent('Accept', () => 'application/json');
+    
+    dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (request) {
+        request.data = adjustRequestData(request.data);
+        return request;
+      },
+    ));
+    
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: this.onRequest,
       onResponse: this.onResponse,
@@ -27,10 +34,25 @@ abstract class ApiServiceMixin {
 
     _rest = new RestApi(apiService: this);
   }
-  
-  Future<bool> initializeCache({String fileName}) {
-    _localStorageManager = new LocalStorageManager('cache_' + (fileName == null || fileName.isEmpty ? this.runtimeType.toString() : fileName) + '.json');
-    return localStorageManager.ready;
+
+  dynamic adjustRequestData(dynamic data) {
+    if (data == null) {
+      return null;
+    }
+
+    if (data is Map) {
+      for (String key in data.keys) {
+        data[key] = adjustRequestData(data[key]);
+      }
+    } else if (data is List) {
+      for (int i = 0; i < data.length; i++) {
+        data[i] = adjustRequestData(data[i]);
+      }
+    } else if (data is DateTime) {
+      data = data.toString();
+    }
+
+    return data;
   }
 
   GraphQLApi initializeGraphQL({String routePath = 'graphql'}) {
@@ -40,6 +62,11 @@ abstract class ApiServiceMixin {
     return graphQL;
   }
 
+  Future<bool> initializeCache({String fileName}) {
+    _localStorageManager = new LocalStorageManager('cache_' + (fileName == null || fileName.isEmpty ? this.runtimeType.toString() : fileName) + '.json');
+    return localStorageManager.ready;
+  }
+  
   dynamic onRequest(RequestOptions request) async => request;
   dynamic onResponse(Response<dynamic> response) async {
     response.data = DefaultApiResponseModel.fromJson(response.data);
