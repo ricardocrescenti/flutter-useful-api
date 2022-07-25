@@ -1,81 +1,91 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:useful_api/useful_api.dart';
 
 class GraphQLApi {
-  final ApiServiceMixin apiService;
-  final String routePath;
 
-  final Map<String, GraphQLSchema> schemas = {};
+	final ApiServiceMixin apiService;
+	final String? routePath;
 
-  GraphQLApi({
-    @required this.apiService,
-    this.routePath,
-  });
+	final Map<String, GraphQLSchema> schemas = {};
 
-  GraphQLSchema addSchema(String name, List<Object> fields) {
-    GraphQLSchema graphQLSchema = GraphQLSchema(this, name, fields: fields);
-    schemas[name] = graphQLSchema;
-    return graphQLSchema;
-  }
+	GraphQLApi({
+		required this.apiService,
+		this.routePath,
+	});
 
-  Future<T> query<T>(String queryName, {String schemaName, Map<String, dynamic> args, T Function(dynamic data) convertion, ApiCacheCallback cache}) async {
-    Response response;
+	GraphQLSchema addSchema(String name, List<Object> fields) {
 
-    if (convertion == null) {
-      convertion = (data) => data;
-    }
+		GraphQLSchema graphQLSchema = GraphQLSchema(this, name, fields: fields);
+		schemas[name] = graphQLSchema;
+		return graphQLSchema;
 
-    Future<Response> futureResponse = _post(GraphQLJsonBuilder
-      .query(queryName)
-      .addArgs(args)
-      .addFields(schemas[schemaName ?? queryName].graphQLFields()));
+	}
 
-    if (cache != null) {
-      assert(apiService.localStorageManager != null, 'You can be initialize cache');
+	Future<T> query<T>(String queryName, {String? schemaName, Map<String, dynamic>? args, T Function(dynamic data)? convertion, ApiCacheCallback? cache}) async {
 
-      dynamic localCache = await apiService.localStorageManager.getItem(cache.name);
-      if (localCache != null) {
-        response = await apiService.onResponse(Response(
-          data: localCache
-        ));
-      }
+		dynamic data;
+		convertion ??= (data) => data;
 
-      futureResponse.then((response) {
-        apiService.localStorageManager.setItem(cache.name, (response.data is DefaultApiResponseModel ? response.data.toJson() : response.data));
-        if (localCache != null && cache.onGetData != null) {
-          cache.onGetData(convertion(response.data));
-        }
-      });
-    }
+		Future<Response> futureResponse = _post(GraphQLJsonBuilder
+			.query(queryName)
+			.addArgs(args)
+			.addFields(schemas[schemaName ?? queryName]!.graphQLFields()));
 
-    if (response == null || cache?.onGetData == null) {
-      response = await futureResponse;
-    }
+		if (cache != null) {
 
-    return convertion(response.data);
-  }
+			assert(apiService.localStorageManager != null, 'You can be initialize cache');
 
-  Future<T> mutation<T>(String mutationName, {@required String schemaName, Map<String, dynamic> args, T Function(dynamic data) convertion, String cacheName}) async {
-    Response response = await _post(GraphQLJsonBuilder
-      .mutation(mutationName)
-      .addArgs(args)
-      .addFields(schemas[schemaName ?? mutationName].graphQLFields()));
+			dynamic localCache = await apiService.localStorageManager!.getItem(cache.name);
+			if (localCache != null) {
+				data = localCache;
+			}
 
-    if (cacheName != null && cacheName.isNotEmpty) {
-      assert(apiService.localStorageManager != null, 'You can be initialize cache');
-      apiService.localStorageManager.setItem(cacheName, (response.data is DefaultApiResponseModel ? response.data.toJson() : response.data));
-    }
+			futureResponse.then((response) {
 
-    return (convertion == null ? response.data : convertion(response.data));
-  }
+				apiService.localStorageManager!.setItem(cache.name, (response.data is DefaultApiResponseModel ? response.data.toJson() : response.data));
+				if (localCache != null && cache.onGetData != null) {
+					cache.onGetData!(convertion!(response.data));
+				}
 
-  Future<Response<T>> _post<T>(GraphQLJsonBuilder jsonBuilder) async {
-    Map data = jsonBuilder.toJson();
+			});
 
-    Response response = await apiService.dio.post('graphql', data: data);
-    response.data.data = (response.data.data.length > 0 ? response.data.data[jsonBuilder.resolverName] : null);
-    
-    return response;
-  }
+		}
+
+		if (data == null || cache?.onGetData == null) {
+			data = await futureResponse;
+		}
+
+		return convertion(data);
+
+	}
+
+	Future<T> mutation<T>(String mutationName, {String? schemaName, Map<String, dynamic>? args, T Function(dynamic data)? convertion, String? cacheName}) async {
+
+		Response response = await _post(GraphQLJsonBuilder
+			.mutation(mutationName)
+			.addArgs(args)
+			.addFields(schemas[schemaName ?? mutationName]!.graphQLFields()));
+
+		if (cacheName != null && cacheName.isNotEmpty) {
+
+			assert(apiService.localStorageManager != null, 'You can be initialize cache');
+			apiService.localStorageManager!.setItem(cacheName, (response.data is DefaultApiResponseModel ? response.data.toJson() : response.data));
+
+		}
+
+		return (convertion == null ? response.data : convertion(response.data));
+
+	}
+
+	Future<Response<T>> _post<T>(GraphQLJsonBuilder jsonBuilder) async {
+
+		Map data = jsonBuilder.toJson();
+
+		Response response = await apiService.dio.post('graphql', data: data);
+		response.data.data = (response.data.data.length > 0 ? response.data.data[jsonBuilder.resolverName] : null);
+		
+		return response as Response<T>;
+
+	}
+
 }

@@ -13,4 +13,6 @@ export 'models/default_api_error_model.dart';
 export 'models/default_api_response_model.dart';
 export 'models/graphql_schema.dart';
 
-export 'services/api_service_pattern.dart';
+export 'mixins/api_service_pattern.dart';
+
+export 'package:dio/dio.dart';

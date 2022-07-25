@@ -2,9 +2,9 @@ import 'package:localstorage/localstorage.dart';
 
 class LocalStorageManager {
 
-  	LocalStorage _localStorage;
+  	late LocalStorage _localStorage;
 	Map<String, dynamic> _storagePendingItems = {};
-	Future<void> _savingPendingStorageItems;
+	Future<void>? _savingPendingStorageItems;
 
 	Future<bool> get ready => _localStorage.ready;
 
@@ -23,7 +23,7 @@ class LocalStorageManager {
 	Future<dynamic> getItem(String key) async {
 		dynamic value = _storagePendingItems[key];
 
-		if ((value?.isEmpty ?? true) && _localStorage != null && await _localStorage.ready) {
+		if ((value?.isEmpty ?? true) && await _localStorage.ready) {
 			value = _localStorage.getItem(key);
 		}
 
