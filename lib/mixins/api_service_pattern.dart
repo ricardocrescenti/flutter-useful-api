@@ -1,8 +1,7 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:useful_api/useful_api.dart';
 
-abstract class ApiServiceMixin {
+mixin ApiServiceMixin {
 
 	final Dio dio = Dio();
 
@@ -15,16 +14,17 @@ abstract class ApiServiceMixin {
 	GraphQLApi? _graphQL;
 	GraphQLApi? get graphQL => _graphQL;
 
-	void initializeDio(String baseUrl) {
+	void initializeDio({ String? baseUrl }) {
 
-		dio.options.baseUrl = baseUrl;
+		dio.options.baseUrl = (baseUrl ?? '');
 		dio.options.headers.putIfAbsent('Accept', () => 'application/json');
 
-		dio.interceptors.add(InterceptorsWrapper(
-			onRequest: (request, handler) {
-				request.data = adjustRequestData(request.data);
-			},
-		));
+		// dio.interceptors.add(InterceptorsWrapper(
+		// 	onRequest: (request, handler) {
+		// 		request.data = adjustRequestData(request.data);
+		// 		handler.next(request);
+		// 	},
+		// ));
 
 		dio.interceptors.add(InterceptorsWrapper(
 			onRequest: this.onRequest,
@@ -74,13 +74,18 @@ abstract class ApiServiceMixin {
 
 	}
 	
-	void onRequest(RequestOptions request, RequestInterceptorHandler handler) async => request;
+	void onRequest(RequestOptions request, RequestInterceptorHandler handler) async {
+
+		handler.next(request);
+
+	}
 	void onResponse(Response<dynamic> response, ResponseInterceptorHandler handler) async {
 
 		response.data = DefaultApiResponseModel.fromJson(response.data);
 		if (response.data.error != null) {
 			throw response.data;
 		}
+		handler.next(response);
 
 	}
 	void onError(DioError error, ErrorInterceptorHandler handler) async {
@@ -88,6 +93,7 @@ abstract class ApiServiceMixin {
 		if (error.response != null) {
 			error.response!.data = DefaultApiResponseModel.fromJson(error.response!.data);
 		}
+		handler.next((error));
 
 	}
 

@@ -1,14 +1,11 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:useful_api/useful_api.dart';
 
 class RestApi {
 	final ApiServiceMixin apiService;
-	final String? routePath;  
 	
 	RestApi({
 		required this.apiService,
-		this.routePath,
 	});
 
 	Future<T> delete<T>(BuildContext context, String path, {dynamic data, Map<String, dynamic>? queryParameters, Options? options, CancelToken? cancelToken, T Function(dynamic response)? convertData, ApiCacheCallback? cache}) async {
@@ -75,6 +72,6 @@ class RestApi {
 
 		}
 
-		return (convertData(data));
+		return convertData(data);
 	}
 }

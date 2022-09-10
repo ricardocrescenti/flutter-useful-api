@@ -8,7 +8,16 @@ class DefaultApiErrorModel {
 	DefaultApiErrorModel.fromJson(dynamic json) {
 
 		if (json is String) {
-			json = jsonDecode(json);
+
+			if (json.startsWith('{') || json.startsWith('[')) {
+				json = jsonDecode(json);
+			} else {
+				json = {
+					'messages': [json],
+					'message': json
+				};
+			}
+
 		}
 
 		if (json['messages'] != null) {
